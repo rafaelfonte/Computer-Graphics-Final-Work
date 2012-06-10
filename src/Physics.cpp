@@ -7,15 +7,28 @@
 
 #include "Physics.h"
 
-namespace std {
+Physics::Physics(unsigned double mass,
+				 double position[], double speed[], double acceleration[],
+				 double thetaPosition[], double thetaSpeed[], double thetaAcceleration[],
+				 double phiPosition[], double phiSpeed[], double phiAcceleration[])
+{
+	this->mass = mass;
 
-Physics::Physics() {
-	// TODO Auto-generated constructor stub
+	for(int i = 0; i < WORLD_DIMENSIONS; i++)
+	{
+		this->position[i] = position[i];
+		this->speed[i] = speed[i];
+		this->acceleration[i] = acceleration[i];
+		this->thetaPosition[i] = thetaPosition[i];
+		this->thetaSpeed[i] = thetaSpeed[i];
+		this->thetaAcceleration[i] = thetaAcceleration[i];
+		this->phiPosition[i] = thetaPosition[i];
+		this->phiSpeed[i] = thetaSpeed[i];
+		this->phiAcceleration[i] = thetaAcceleration[i];
+	}
 
 }
 
 Physics::~Physics() {
 	// TODO Auto-generated destructor stub
 }
-
-} /* namespace std */
