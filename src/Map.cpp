@@ -1,17 +1,21 @@
 /*
- * Car.cpp
+ * Map.cpp
  *
- *  Created on: 03/06/2012
+ *  Created on: 09/06/2012
  *      Author: Rafael Fonte
  */
 
-#include "Car.h"
+#include "Map.h"
 
-Car::Car() {
+namespace std {
+
+Map::Map() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Car::~Car() {
+Map::~Map() {
 	// TODO Auto-generated destructor stub
 }
+
+} /* namespace std */
