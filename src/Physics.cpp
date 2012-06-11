@@ -7,7 +7,7 @@
 
 #include "Physics.h"
 
-Physics::Physics(unsigned double mass,
+Physics::Physics(double mass,
 				 double position[], double speed[], double acceleration[],
 				 double thetaPosition[], double thetaSpeed[], double thetaAcceleration[],
 				 double phiPosition[], double phiSpeed[], double phiAcceleration[])
@@ -16,9 +16,9 @@ Physics::Physics(unsigned double mass,
 
 	for(int i = 0; i < WORLD_DIMENSIONS; i++)
 	{
-		this->position[i] = position[i];
-		this->speed[i] = speed[i];
-		this->acceleration[i] = acceleration[i];
+		this->linearPosition[i] = position[i];
+		this->linearSpeed[i] = speed[i];
+		this->linearAcceleration[i] = acceleration[i];
 		this->thetaPosition[i] = thetaPosition[i];
 		this->thetaSpeed[i] = thetaSpeed[i];
 		this->thetaAcceleration[i] = thetaAcceleration[i];
