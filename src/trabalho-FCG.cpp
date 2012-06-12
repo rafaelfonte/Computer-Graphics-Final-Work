@@ -182,7 +182,7 @@ void updateCam() {
 	source0Pos[2] = posZ;
 
     GLfloat light_position1[] = {posX, posY, posZ, 1.0 };
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
+    //glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
 
 
 }
@@ -194,7 +194,7 @@ void initLight() {
 	GLfloat light_ambient[] = {backgrundColor[0], backgrundColor[1], backgrundColor[2], backgrundColor[3]};
 	GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 1.0};
 	GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat light_position[] = {0.0, 0.0, 0.0, 1.0};
+	GLfloat light_position[] = {10.0, 10.0, 10.0, 1.0};
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -369,6 +369,7 @@ void enableFog(void)
 {
 }
 
+/*
 void renderFloor() {
 
 
@@ -414,9 +415,10 @@ void renderFloor() {
 
 	glPopMatrix();
 }
+*/
 
-void renderWall() {
-
+// vamos tern
+void renderFloor() {
 
 	// set things up to render the wall with the texture
 	glShadeModel(GL_SMOOTH);
@@ -455,6 +457,28 @@ void renderWall() {
         }
     }
 
+  for (int i = 0; i < xQuads; i++) {
+        for (int j = 0; j < zQuads; j++) {
+            glBegin(GL_QUADS);
+                glTexCoord2f(1.0f, 0.0f);   // coords for the texture
+                glNormal3f(0.0f,1.0f,0.0f);
+                glVertex3f(0.0f , (j+1) * (float)planeSize/zQuads, i * (float)planeSize/xQuads);
+
+                glTexCoord2f(0.0f, 0.0f);  // coords for the texture
+                glNormal3f(0.0f,1.0f,0.0f);
+                glVertex3f(0.0f, (j+1) * (float)planeSize/zQuads, (i+1) * (float)planeSize/xQuads);
+
+                glTexCoord2f(0.0f, 1.0f);  // coords for the texture
+                glNormal3f(0.0f,1.0f,0.0f);
+                glVertex3f(0.0f, j * (float)planeSize/zQuads, (i+1) * (float)planeSize/xQuads);
+
+                glTexCoord2f(1.0f, 1.0f);  // coords for the texture
+                glNormal3f(0.0f,1.0f,0.0f);
+                glVertex3f(0.0f, j * (float)planeSize/zQuads, i * (float)planeSize/xQuads);
+
+            glEnd();
+        }
+    }
 	glDisable(type);
 
 
