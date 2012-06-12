@@ -1,6 +1,7 @@
+#Mon Jun 11 21:11:49 BRT 2012
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.1681730837/PATH/delimiter=;
 environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.1681730837/PATH/operation=replace
-environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.1681730837/PATH/value=C\:\\Program Files (x86)\\CodeBlocks\\MinGW\\include;C\:\\Program Files (x86)\\CodeBlocks\\MinGW\\bin;C\:\\Windows\\System32;C\:\\Users\\pedrobmarin\\git\\Computer-Graphics-Final-Work\\include
+environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.1681730837/PATH/value=C\:\\Program Files (x86)\\CodeBlocks\\MinGW\\include;C\:\\Program Files (x86)\\CodeBlocks\\MinGW\\bin;C\:\\Windows\\System32;C\:\\Users\\pedrobmarin\\git\\Computer-Graphics-Final-Work\\include;C\:\\Users\\Rafael Fonte\\git\\Computer-Graphics-Final-Work\\include;C\:\\QtSDK\\mingw\\bin
 environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.1681730837/append=true
 environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.1681730837/appendContributed=true

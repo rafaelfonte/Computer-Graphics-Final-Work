@@ -29,7 +29,9 @@
 								<option id="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level.1954436262" name="Debug Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1959800822" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;C:\Users\pedrobmarin\git\Computer-Graphics-Final-Work\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Rafael Fonte\git\Computer-Graphics-Final-Work\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Program Files (x86)\CodeBlocks\MinGW\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\QtSDK\mingw\bin&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.142467984" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -55,6 +57,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.paths.2071257508" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;C:\Users\pedrobmarin\git\Computer-Graphics-Final-Work\lib&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Rafael Fonte\git\Computer-Graphics-Final-Work\lib&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.635131851" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

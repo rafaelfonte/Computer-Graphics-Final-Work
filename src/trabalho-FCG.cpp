@@ -277,7 +277,8 @@ void initSound() {
         printf("init() - No errors yet.\n");
     }
 
-	alutLoadWAVFile("..\\res\\Footsteps.wav",&format,&data,&size,&freq,false);
+    char lol = 0;
+	alutLoadWAVFile("..\\res\\Footsteps.wav",&format,&data,&size,&freq,&lol);
     alBufferData(buffer[0],format,data,size,freq);
 
 	alGetError(); /* clear error */
