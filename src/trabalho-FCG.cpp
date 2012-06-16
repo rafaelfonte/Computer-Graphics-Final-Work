@@ -158,6 +158,7 @@ void mainInit() {
   map.setSkyTexture("..\\res\\sky.bmp");
   map.setBackgroundTexture("..\\res\\background.bmp");
   map.setFloorTexture("..\\res\\road.bmp");
+  map.setWallTexture("..\\res\\wall.bmp");
   map.populateBuildingList(&map.buildingList);
   map.printList(map.buildingList);
 

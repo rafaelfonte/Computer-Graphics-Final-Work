@@ -75,6 +75,8 @@ class Map
     void renderFloor();
 
     void renderWall();
+
+    void makeBuilding(int x, int z);
 };
 
 #endif // MAP_H
