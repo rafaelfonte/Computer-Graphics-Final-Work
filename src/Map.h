@@ -1,20 +1,52 @@
-/*
- * Map.h
- *
- *  Created on: 09/06/2012
- *      Author: Rafael Fonte
- */
+#ifndef MAP_H
+#define MAP_H
 
-#ifndef MAP_H_
-#define MAP_H_
+#include <windows.h>
+#include <gl/glut.h>
+#include "Texture.h"
+#include "bitmap.h"
 
-namespace std {
+using namespace std;
 
-class Map {
-public:
-	Map();
-	virtual ~Map();
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+class Map
+{
+  //----------------------------------------------------------------------------
+  public:
+
+    Map();
+
+    virtual ~Map();
+
+    Texture background;
+
+    Texture floor;
+
+    Texture wall;
+
+    Texture miniMap;
+
+    void setBackgroundTexture(char *path);
+
+    void setFloorTexture(char *path);
+
+    void setWallTexture(char *path);
+
+    void renderMap();
+
+  //----------------------------------------------------------------------------
+  protected:
+
+
+  //----------------------------------------------------------------------------
+  private:
+
+    void renderBackground();
+
+    void renderFloor();
+
+    void renderWall();
 };
 
-} /* namespace std */
-#endif /* MAP_H_ */
+#endif // MAP_H
