@@ -1,8 +1,59 @@
 #include "Map.h"
 
+CRD *Map::createList() {
+  return NULL;
+}
+
+bool Map::emptyList(CRD *list) {
+  if (list == NULL) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void Map::printList(CRD *list) {
+  CRD *iterator;
+  iterator = list;
+  while(!emptyList(iterator)){
+    printf("(%d,%d)\n", iterator->x, iterator->z);
+    iterator = iterator->next;
+  }
+}
+
+void Map::insertList(CRD **list, int x, int z) {
+  CRD *iterator;
+  iterator = *list;
+
+  CRD *newCoord = (CRD*)malloc(sizeof(CRD));
+
+  newCoord->x = x;
+  newCoord->z = z;
+  newCoord->next = iterator;
+
+  *list = newCoord;
+}
+
+void Map::populateBuildingList(CRD **list) {
+  int i = 0;
+  int x;
+  int z;
+  printf("altura: %d largura: %d\n", miniMap.info->bmiHeader.biHeight, miniMap.info->bmiHeader.biWidth);
+  for(miniMap.ptr = miniMap.bits;  i < miniMap.info->bmiHeader.biHeight * miniMap.info->bmiHeader.biWidth; i++, miniMap.ptr += 3) {
+    // White pixel is a building
+    if(miniMap.ptr[0] == 255 && miniMap.ptr[1]==255 && miniMap.ptr[2]==255) {
+      x = i / miniMap.info->bmiHeader.biWidth;
+      z = i % miniMap.info->bmiHeader.biWidth;
+      insertList(&buildingList, x, z);
+    }
+  }
+}
+
 Map::Map()
 {
   //ctor
+  buildingList = createList();
+  scale = 10;
 }
 
 Map::~Map()
@@ -56,9 +107,9 @@ void Map::setSkyTexture(char *path)
 void Map::renderBackground()
 {
   // PRECISAMOS MUDAR PRO TAMANHO DO MINIMAP
-  int planeHeight = miniMap.info->bmiHeader.biHeight;
-  int planeWidth = miniMap.info->bmiHeader.biWidth;
-  int sceneHeight = 5;
+  int planeHeight = scale * miniMap.info->bmiHeader.biHeight;
+  int planeWidth = scale * miniMap.info->bmiHeader.biWidth;
+  int sceneHeight = 8;
 
   // set things up to render the background with the texture
 	glShadeModel(GL_SMOOTH);
@@ -189,8 +240,8 @@ void Map::renderBackground()
 void Map::renderFloor()
 {
   // PRECISAMOS MUDAR PRO TAMANHO DO MINIMAP
-  int planeHeight = miniMap.info->bmiHeader.biHeight;
-  int planeWidth = miniMap.info->bmiHeader.biWidth;
+  int planeHeight = scale * miniMap.info->bmiHeader.biHeight;
+  int planeWidth = scale * miniMap.info->bmiHeader.biWidth;
 
   // set things up to render the floor with the texture
 	glShadeModel(GL_SMOOTH);

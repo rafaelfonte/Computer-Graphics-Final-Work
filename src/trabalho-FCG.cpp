@@ -95,7 +95,7 @@ void setWindow() {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f,(GLfloat)windowWidth/(GLfloat)windowHeight,0.1f, 250.0f);
+	gluPerspective(45.0f,(GLfloat)windowWidth/(GLfloat)windowHeight,0.1f, 500.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -158,6 +158,8 @@ void mainInit() {
   map.setSkyTexture("..\\res\\sky.bmp");
   map.setBackgroundTexture("..\\res\\background.bmp");
   map.setFloorTexture("..\\res\\road.bmp");
+  map.populateBuildingList(&map.buildingList);
+  map.printList(map.buildingList);
 
 	initLight();
 
@@ -178,6 +180,8 @@ void renderScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+  //printf("x = %f, z = %f\n", posX, posZ);
+
 	updateCam();
 	map.renderMap();
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
@@ -188,8 +192,8 @@ void updateState() {
 	if (upPressed || downPressed) {
 
 		if (running) {
-			speedX = 0.05 * sin(roty*PI/180) * 2;
-			speedZ = -0.05 * cos(roty*PI/180) * 2;
+			speedX = 0.05 * sin(roty*PI/180) * 20;
+			speedZ = -0.05 * cos(roty*PI/180) * 20;
 		} else {
 			speedX = 0.05 * sin(roty*PI/180);
 			speedZ = -0.05 * cos(roty*PI/180);
