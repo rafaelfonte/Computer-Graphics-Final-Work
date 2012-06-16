@@ -95,7 +95,7 @@ void setWindow() {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f,(GLfloat)windowWidth/(GLfloat)windowHeight,0.1f, 100.0f);
+	gluPerspective(45.0f,(GLfloat)windowWidth/(GLfloat)windowHeight,0.1f, 250.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -154,7 +154,9 @@ void mainInit() {
 	glEnable(GL_DEPTH_TEST);
 
   ///////////////////////////////////////////////////////MAPPPPP
-  map.setBackgroundTexture("..\\res\\sky.bmp");
+  map.setMiniMapTexture("..\\res\\map.bmp");
+  map.setSkyTexture("..\\res\\sky.bmp");
+  map.setBackgroundTexture("..\\res\\background.bmp");
   map.setFloorTexture("..\\res\\road.bmp");
 
 	initLight();

@@ -21,13 +21,19 @@ class Map
 
     Texture background;
 
+    Texture sky;
+
     Texture floor;
 
     Texture wall;
 
     Texture miniMap;
 
+    void setMiniMapTexture(char *path);
+
     void setBackgroundTexture(char *path);
+
+    void setSkyTexture(char *path);
 
     void setFloorTexture(char *path);
 
