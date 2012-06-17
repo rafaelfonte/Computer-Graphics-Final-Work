@@ -147,13 +147,6 @@ void mainInit() {
 	setWindow();
 	setViewport(0, windowWidth, 0, windowHeight);
 
-	// habilita remocao de faces ocultas
-
-	//glFrontFace (GL_CCW);
-
-	//glEnable(GL_CULL_FACE);
-	//glDisable(GL_CULL_FACE);
-
 	// habilita o z-buffer
 	glEnable(GL_DEPTH_TEST);
 
@@ -165,6 +158,10 @@ void mainInit() {
   map.setWallTexture("..\\res\\wall.bmp");
   map.populateLists();
   map.printList(map.buildingList);
+  // habilita remocao de faces ocultas
+	glFrontFace(GL_CCW);
+	modelOpponentCar.Init();
+	modelPlayerCar.Init();
 
 	initLight();
 
@@ -184,19 +181,22 @@ void renderScene() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-  /*
+
   //printf("x = %f, z = %f\n", posX, posZ);
-  modelPlayerCar.Init();
-	//modelCar.Load("../res/porsche.obj");
-	modelPlayerCar.Translate(map.playerCar->z, 0.3f, map.playerCar->x);
-	modelPlayerCar.Draw();
-	modelOpponentCar.Init();
-  //modelOponnentCar.Load("../res/porsche.obj");
-	modelOpponentCar.Translate(map.opponentCar->z, 0.3f, map.opponentCar->x);
+
+  updateCam();
+
+  map.renderMap();
+
+	glEnable(GL_CULL_FACE);
+	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
 	modelOpponentCar.Draw();
-  */
-	updateCam();
-	map.renderMap();
+	modelPlayerCar.Translate(map.playerCar->x, 0.3f, map.playerCar->z);
+	modelPlayerCar.Draw();
+	glDisable(GL_CULL_FACE);
+
+
+
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
 }
 

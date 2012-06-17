@@ -46,28 +46,28 @@ void Map::populateLists() {
     printf("i = %d\n", i);
     if(miniMap.ptr[0] == 255 && miniMap.ptr[1] == 255 && miniMap.ptr[2] == 255) {
       printf("Achou 1\n");
-      x = i % miniMap.info->bmiHeader.biWidth;
-      x = (scale * x) + (scale/2);
-      z = i / miniMap.info->bmiHeader.biWidth;
+      z = i % miniMap.info->bmiHeader.biWidth;
       z = (scale * z) + (scale/2);
+      x = i / miniMap.info->bmiHeader.biWidth;
+      x = (scale * x) + (scale/2);
       insertList(&buildingList, x, z);
     }
     // Red pixel is the opponent car
     if(miniMap.ptr[0] == 255 && miniMap.ptr[1] == 0 && miniMap.ptr[2] == 0) {
       printf("Achou oponente\n");
-      x = i % miniMap.info->bmiHeader.biWidth;
-      x = (scale * x) + (scale/2);
-      z = i / miniMap.info->bmiHeader.biWidth;
+      z = i % miniMap.info->bmiHeader.biWidth;
       z = (scale * z) + (scale/2);
+      x = i / miniMap.info->bmiHeader.biWidth;
+      x = (scale * x) + (scale/2);
       insertList(&opponentCar, x, z);
     }
     // Blue pixel is the opponent car
     if(miniMap.ptr[0] == 0 && miniMap.ptr[1] == 0 && miniMap.ptr[2] == 255) {
       printf("Achou jogador\n");
-      x = i % miniMap.info->bmiHeader.biWidth;
-      x = (scale * x) + (scale/2);
-      z = i / miniMap.info->bmiHeader.biWidth;
+      z = i % miniMap.info->bmiHeader.biWidth;
       z = (scale * z) + (scale/2);
+      x = i / miniMap.info->bmiHeader.biWidth;
+      x = (scale * x) + (scale/2);
       insertList(&playerCar, x, z);
     }
     if (((i + 1) / j) == miniMap.info->bmiHeader.biWidth) {
