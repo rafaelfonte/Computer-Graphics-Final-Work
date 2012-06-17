@@ -11,6 +11,7 @@ sobre um plano.
 #include <iostream>
 #include <gl/glut.h>
 #include "Map.h"
+#include "ModelAl.h"
 
 #define PI 3.14159265
 
@@ -75,6 +76,9 @@ float posZ = 2.0f;
 
 float backgrundColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 Map map;
+
+CModelAl modelPlayerCar;
+CModelAl modelOpponentCar;
 
 /*
 variavel auxiliar pra dar variação na altura do ponto de vista ao andar.
@@ -159,7 +163,7 @@ void mainInit() {
   map.setBackgroundTexture("..\\res\\background.bmp");
   map.setFloorTexture("..\\res\\road.bmp");
   map.setWallTexture("..\\res\\wall.bmp");
-  map.populateBuildingList(&map.buildingList);
+  map.populateLists();
   map.printList(map.buildingList);
 
 	initLight();
@@ -180,9 +184,17 @@ void renderScene() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
+  /*
   //printf("x = %f, z = %f\n", posX, posZ);
-
+  modelPlayerCar.Init();
+	//modelCar.Load("../res/porsche.obj");
+	modelPlayerCar.Translate(map.playerCar->z, 0.3f, map.playerCar->x);
+	modelPlayerCar.Draw();
+	modelOpponentCar.Init();
+  //modelOponnentCar.Load("../res/porsche.obj");
+	modelOpponentCar.Translate(map.opponentCar->z, 0.3f, map.opponentCar->x);
+	modelOpponentCar.Draw();
+  */
 	updateCam();
 	map.renderMap();
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp

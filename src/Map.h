@@ -29,6 +29,10 @@ class Map
 
     CRD *buildingList;
 
+    CRD *playerCar;
+
+    CRD *opponentCar;
+
     int scale;
 
     Texture background;
@@ -59,7 +63,7 @@ class Map
 
     bool emptyList(CRD *list);
 
-    void populateBuildingList(CRD **list);
+    void populateLists();
 
     void printList(CRD *list);
 
