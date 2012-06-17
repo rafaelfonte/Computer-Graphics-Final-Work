@@ -57,7 +57,7 @@ int mouseLastX = 0;
 int mouseLastY = 0;
 
 float roty = 0.0f;
-float rotx = 90.0f;
+float rotx = 0.0f;
 
 bool rightPressed = false;
 bool leftPressed = false;
@@ -112,9 +112,8 @@ void setWindow() {
 Atualiza a posição e orientação da camera
 */
 void updateCam() {
-
 	gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
-		posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) + cos(rotx*PI/180),posZ -cos(roty*PI/180),
+		posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) - rotx/180,posZ -cos(roty*PI/180),
 		0.0,1.0,0.0);
 }
 
@@ -159,7 +158,14 @@ void mainInit() {
   map.populateLists();
   map.printList(map.buildingList);
   // habilita remocao de faces ocultas
-	glFrontFace(GL_CCW);
+
+  	modelOpponentCar = CModelAl();
+  	modelPlayerCar = CModelAl();
+
+  	posX = map.playerCar->x;
+  	posZ = map.playerCar->z;
+
+    glFrontFace(GL_CCW);
 	modelOpponentCar.Init();
 	modelPlayerCar.Init();
 
@@ -174,19 +180,8 @@ void mainInit() {
 
 }
 
-
-void renderScene() {
-	glClearColor(backgrundColor[0],backgrundColor[1],backgrundColor[2],backgrundColor[3]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // limpar o depth buffer
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-  //printf("x = %f, z = %f\n", posX, posZ);
-
-  updateCam();
-
-  map.renderMap();
+void renderModels(){
+	map.renderMap();
 
 	glEnable(GL_CULL_FACE);
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
@@ -194,7 +189,21 @@ void renderScene() {
 	modelPlayerCar.Translate(map.playerCar->x, 0.3f, map.playerCar->z);
 	modelPlayerCar.Draw();
 	glDisable(GL_CULL_FACE);
+}
 
+void renderScene() {
+
+	glClearColor(backgrundColor[0],backgrundColor[1],backgrundColor[2],backgrundColor[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // limpar o depth buffer
+
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+  //printf("x = %f, z = %f\n", posX, posZ);
+
+	updateCam();
+
+	renderModels();
 
 
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
@@ -266,7 +275,7 @@ void mainRender() {
 	renderScene();
 	glFlush();
 	glutPostRedisplay();
-	Sleep(30);
+	Sleep(20);
 }
 
 /**
@@ -304,24 +313,50 @@ void onMouseMove(int x, int y) {
 /**
 Mouse move with no button pressed event handler
 */
+const float windowLowerRelLimit = 0.2f;
+
 void onMousePassiveMove(int x, int y) {
 
-	roty += (x - mouseLastX);
+	if(x < windowLowerRelLimit*windowWidth || x > (1.0 - windowLowerRelLimit)*windowWidth || y < windowLowerRelLimit*windowHeight || y > (1.0 - windowLowerRelLimit)*windowHeight)
+	{
+		if(x < windowLowerRelLimit*windowWidth || x > (1.0 - windowLowerRelLimit)*windowWidth)
+			glutWarpPointer(windowWidth/2,windowHeight/2);
+
+		if(y < windowLowerRelLimit*windowHeight || y > (1.0 - windowLowerRelLimit)*windowHeight)
+			glutWarpPointer(windowWidth/2,windowHeight/2);
+
+		mouseLastX = windowWidth/2;
+		mouseLastY = windowHeight/2;
+	}
+	else
+	{
+		roty += x - mouseLastX;
+
+		rotx += y - mouseLastY;
+
+		mouseLastX = x;
+		mouseLastY = y;
+	}
+
+	/*	roty += (x - mouseLastX);
 
 	rotx -= (y - mouseLastY);
 
-	if (rotx < -128.0) {
-		rotx = -128.0;
-	}
+	r
+	//if (rotx < -128.0) {
+	//	rotx = -128.0;
+	//}
 
-	if (rotx > -45.0) {
-		rotx = -45.0;
-	}
+	//if (rotx > -45.0) {
+	//	rotx = -45.0;
+	//}
 
 	mouseLastX = x;
 	mouseLastY = y;
 
 	//glutPostRedisplay();
+	 *
+	 */
 }
 
 /**
@@ -444,6 +479,9 @@ int main(int argc, char **argv) {
 	*/
 	glutKeyboardFunc(onKeyDown);
 	glutKeyboardUpFunc(onKeyUp);
+
+	//Apagando o cursor
+	glutSetCursor(GLUT_CURSOR_NONE);
 
 	mainInit();
 
