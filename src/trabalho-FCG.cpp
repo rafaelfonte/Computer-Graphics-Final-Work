@@ -119,7 +119,6 @@ void updateCam() {
 
 void initLight() {
   glEnable(GL_LIGHTING);
-  glDisable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
 	GLfloat light_ambient[] = {backgrundColor[0], backgrundColor[1], backgrundColor[2], backgrundColor[3]};
@@ -182,7 +181,10 @@ void mainInit() {
 }
 
 void renderModels(){
+
+  glDisable(GL_LIGHTING);
 	map.renderMap();
+  glEnable(GL_LIGHTING);
 
 	glEnable(GL_CULL_FACE);
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);

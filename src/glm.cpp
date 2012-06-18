@@ -247,60 +247,6 @@ glmDirName(char* path)
     return dir;
 }
 
-static void loadTexture(char* filename, GLMtexture* tex)
-{
-
-
-	//GLMtexture tex;
-	tex->type = -1;
-	//printf ("\nLoading texture..\n");
-	BITMAPINFO* info;
-	tex->filename = filename;
-	GLubyte* bits = LoadDIBitmap(filename, &info);
-    if (bits == (GLubyte *)0) {
-		printf ("Error loading texture!\n\n");
-		return;
-	}
-
-
-    // Figure out the type of texture
-    if (info->bmiHeader.biHeight == 1)
-      tex->type = GL_TEXTURE_1D;
-    else
-      tex->type = GL_TEXTURE_2D;
-
-	GLuint texture;
-
-    // Create and bind a texture object
-    glGenTextures(1, &texture);
-	tex->id = texture;
-	glBindTexture(tex->type, tex->id);
-
-	GLubyte * rgba;
-    // Create an RGBA image
-    rgba = (GLubyte *)malloc(info->bmiHeader.biWidth * info->bmiHeader.biHeight * 4);
-
-	GLubyte * rgbaptr;
-	GLubyte * ptr;
-    int i = info->bmiHeader.biWidth * info->bmiHeader.biHeight;
-    for( rgbaptr = rgba, ptr = bits;  i > 0; i--, rgbaptr += 4, ptr += 3)
-    {
-            rgbaptr[0] = ptr[2];     // windows BMP = BGR
-            rgbaptr[1] = ptr[1];
-            rgbaptr[2] = ptr[0];
-            rgbaptr[3] = (ptr[0] + ptr[1] + ptr[2]) / 3;
-    }
-
-	// Set texture parameters
-	glTexParameteri(tex->type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(tex->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(tex->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(tex->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-    glTexImage2D(tex->type, 0, 4, info->bmiHeader.biWidth, info->bmiHeader.biHeight,
-                0, GL_RGBA, GL_UNSIGNED_BYTE, rgba );
-
-}
 
 /* glmReadMTL: read a wavefront material library file
  *
@@ -393,22 +339,6 @@ glmReadMTL(GLMmodel* model, char* name)
             /* wavefront shininess is from [0, 1000], so scale for OpenGL */
             model->materials[nummaterials].shininess /= 1000.0;
             model->materials[nummaterials].shininess *= 128.0;
-            break;
-        case 'm':				/* map_Kd */
-			fgets(buf, sizeof(buf), file);
-            sscanf(buf, "%s %s", buf, buf);
-
-			char* textureFilename;
-			dir = glmDirName(model->pathname);
-			textureFilename = (char*)malloc(sizeof(char) * (strlen(dir) + strlen(buf) + 1));
-			strcpy(textureFilename, dir);
-			strcat(textureFilename, buf);
-			free(dir);
-
-			//model->materials[nummaterials].texture =
-			loadTexture(strdup(textureFilename), &(model->materials[nummaterials].texture));
-			free(textureFilename);
-            printf("%s \n \n", model->materials[nummaterials].texture.filename);
             break;
         case 'K':
             switch(buf[1]) {
@@ -1712,14 +1642,6 @@ glmDraw(GLMmodel* model, GLuint mode)
             glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material->diffuse);
             glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material->specular);
             glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, material->shininess);
-
-            glDisable(GL_TEXTURE_2D);
-			//printf("type: %d %d \n", material->texture.type, GL_TEXTURE_2D);
-			if (material->texture.type == GL_TEXTURE_2D) {
-				glEnable(GL_TEXTURE_2D);
-				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				glBindTexture(material->texture.type, material->texture.id);
-			}
         }
 
         if (mode & GLM_COLOR) {
