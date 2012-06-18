@@ -76,5 +76,5 @@ bool C3DObject::Load(const char *pszFilename) {
 void C3DObject::Draw() {
 
   if (m_poModel)
-    glmDraw(m_poModel, GLM_SMOOTH | GLM_MATERIAL);
+    glmDraw(m_poModel, GLM_SMOOTH | GLM_MATERIAL | GLM_TEXTURE);
 }

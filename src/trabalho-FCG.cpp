@@ -155,6 +155,7 @@ void mainInit() {
   map.setBackgroundTexture("..\\res\\background.bmp");
   map.setFloorTexture("..\\res\\road.bmp");
   map.setWallTexture("..\\res\\wall.bmp");
+  map.setCellingTexture("..\\res\\celling.bmp");
   map.populateLists();
   map.printList(map.buildingList);
   // habilita remocao de faces ocultas
@@ -205,6 +206,35 @@ void renderScene() {
 
 	renderModels();
 
+  glViewport(0,windowHeight - windowHeight/3,windowWidth/3,windowHeight/3);
+
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+
+
+  glLoadIdentity();
+
+  glOrtho( 0.0,map.miniMap.info->bmiHeader.biWidth*map.scale,  0.0, map.miniMap.info->bmiHeader.biHeight*map.scale, 0.1, 100.0);
+
+
+  glMatrixMode(GL_MODELVIEW);
+
+  glLoadIdentity();
+
+  gluLookAt(0.0,14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+  //glTranslated( 0.0,10.0,0.0);
+  //glRotated( 90.0,1.0,0.0,0.0);
+
+
+  renderModels();
+
+  glMatrixMode(GL_PROJECTION);
+
+  glPopMatrix();
+
+  glViewport(0,0,windowWidth,windowHeight);
+
+  glMatrixMode(GL_MODELVIEW);
 
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
 }

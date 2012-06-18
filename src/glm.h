@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <gl/glut.h>
+#include "bitmap.h"
 
 #define RAD_TO_PI 57.295779513082320876798154814105
 
@@ -36,6 +37,14 @@
 #define GLM_COLOR    (1 << 3)       /* render with colors */
 #define GLM_MATERIAL (1 << 4)       /* render with materials */
 
+/* GLMtexture: Structure that defines a texture in a material.
+ */
+typedef struct _GLMtexture
+{
+  char*   filename;             /* name the image file */
+  GLenum type;					/* texture type (1D, 2D, 3D) */
+  GLuint id;					/* id of the texture */
+} GLMtexture;
 
 /* GLMmaterial: Structure that defines a material in a model.
  */
@@ -47,6 +56,7 @@ typedef struct _GLMmaterial
   GLfloat specular[4];          /* specular component */
   GLfloat emmissive[4];         /* emmissive component */
   GLfloat shininess;            /* specular exponent */
+  GLMtexture texture;			/* texture of the material */
 } GLMmaterial;
 
 /* GLMtriangle: Structure that defines a triangle in a model.

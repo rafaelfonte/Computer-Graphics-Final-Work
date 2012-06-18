@@ -118,6 +118,14 @@ void Map::setWallTexture(char *path)
 /**
  *
  */
+void Map::setCellingTexture(char *path)
+{
+  celling.initTexture(path);
+}
+
+/**
+ *
+ */
 void Map::setBackgroundTexture(char *path)
 {
   background.initTexture(path);
@@ -403,6 +411,32 @@ void Map::makeBuilding(int x, int z) {
   glEnd();
 
   glDisable(wall.type);
+
+  glTexImage2D(celling.type, 0, 4, celling.info->bmiHeader.biWidth, celling.info->bmiHeader.biHeight,
+                    0, GL_RGBA, GL_UNSIGNED_BYTE, celling.rgba );
+	glEnable(celling.type);
+
+  glColor4f(1.0f,1.0f,1.0f,1.0f);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1.0f, 0.0f);   // coords for the texture
+  glNormal3f(0.0f,1.0f,0.0f);
+  glVertex3f(x + (scale / 2), buildingHeight, z - (scale / 2));
+
+  glTexCoord2f(0.0f, 0.0f);  // coords for the texture
+  glNormal3f(0.0f,1.0f,0.0f);
+  glVertex3f(x - (scale / 2), buildingHeight, z - (scale / 2));
+
+  glTexCoord2f(0.0f, 1.0f);  // coords for the texture
+  glNormal3f(0.0f,1.0f,0.0f);
+  glVertex3f(x - (scale / 2), buildingHeight, z + (scale / 2));
+
+  glTexCoord2f(1.0f, 1.0f);  // coords for the texture
+  glNormal3f(0.0f,1.0f,0.0f);
+  glVertex3f(x + (scale / 2), buildingHeight, z + (scale / 2));
+
+  glDisable(celling.type);
+  glEnd();
+
 	glPopMatrix();
 }
 
