@@ -13,6 +13,8 @@ sobre um plano.
 #include "Map.h"
 #include "ModelAl.h"
 
+#include "Camera.h"
+
 #define PI 3.14159265
 
 // sound stuff
@@ -80,6 +82,12 @@ Map map;
 CModelAl modelPlayerCar;
 CModelAl modelOpponentCar;
 
+
+GLdouble position[3];
+GLdouble orientation[3];
+
+Camera stdCamera = Camera(position,orientation);
+
 /*
 variavel auxiliar pra dar variação na altura do ponto de vista ao andar.
 */
@@ -95,6 +103,17 @@ float gravity = 0.004;
 float heightLimit = 0.2;
 float posYOffset = 0.2;
 
+void updateCameraPosOr(){
+	position[0] = posX;
+	position[1] = posY + posYOffset;
+	position[2] = posZ;
+
+	orientation[0] = sin(roty*PI/180);
+	orientation[1] = -rotx/180;
+	orientation[2] = -cos(roty*PI/180);
+
+}
+
 void setWindow() {
 
 	glMatrixMode(GL_PROJECTION);
@@ -103,18 +122,21 @@ void setWindow() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
-		posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) + cos(rotx*PI/180),posZ -cos(roty*PI/180),
-		0.0,1.0,0.0);
+
+
+	updateCameraPosOr();
+
+	stdCamera.visualize();
+
 }
 
 /**
 Atualiza a posição e orientação da camera
 */
 void updateCam() {
-	gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
-		posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) - rotx/180,posZ -cos(roty*PI/180),
-		0.0,1.0,0.0);
+	updateCameraPosOr();
+
+	stdCamera.visualize();
 }
 
 void initLight() {
@@ -182,6 +204,7 @@ void mainInit() {
 
 void renderModels(){
 	map.renderMap();
+
 
 	glEnable(GL_CULL_FACE);
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
@@ -338,25 +361,6 @@ void onMousePassiveMove(int x, int y) {
 		mouseLastY = y;
 	}
 
-	/*	roty += (x - mouseLastX);
-
-	rotx -= (y - mouseLastY);
-
-	r
-	//if (rotx < -128.0) {
-	//	rotx = -128.0;
-	//}
-
-	//if (rotx > -45.0) {
-	//	rotx = -45.0;
-	//}
-
-	mouseLastX = x;
-	mouseLastY = y;
-
-	//glutPostRedisplay();
-	 *
-	 */
 }
 
 /**
