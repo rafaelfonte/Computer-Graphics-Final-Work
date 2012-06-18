@@ -25,7 +25,7 @@ Car::~Car() {
 }
 
 void Car::draw(){
-	myCarModel.Translate(posX,posY,posZ);
+	myCarModel.Translate(position[0],position[1],position[2]);
 	myCarModel.RotateY(rotY);
 	myCarModel.Draw();
 }
