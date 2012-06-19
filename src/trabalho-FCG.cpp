@@ -40,8 +40,10 @@ void updateCam();
 /**
 Screen dimensions
 */
-int windowWidth = 600;
-int windowHeight = 480;
+//int windowWidth = 600;
+//int windowHeight = 480;
+int windowWidth = 1024;
+int windowHeight = 768;
 
 /**
 Screen position
@@ -111,10 +113,28 @@ void setWindow() {
 /**
 Atualiza a posição e orientação da camera
 */
+
+float lightPos = 0.0;
 void updateCam() {
+
+	//Atualizando a posição das fontes de luz
+	GLfloat light_position[] = {0.0,0.0,0.0,1.0};
+
+
+	light_position[0] = posX;
+	light_position[1] = 10.0f;//10*sin(lightPos*PI/180);
+	light_position[2] = posZ;
+
+	glLightfv(GL_LIGHT1, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT2, GL_POSITION, light_position);
 	gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
 		posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) - rotx/180,posZ -cos(roty*PI/180),
 		0.0,1.0,0.0);
+
+	lightPos+=10.0;
+	if(lightPos >= 360.0)
+		lightPos = 0.0;
+
 }
 
 void initLight() {
@@ -129,6 +149,11 @@ void initLight() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
+	glEnable(GL_LIGHT1);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+
+	glEnable(GL_LIGHT2);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
 }
 
 void setViewport(GLint left, GLint right, GLint bottom, GLint top) {
@@ -182,16 +207,46 @@ void mainInit() {
 
 void renderModels(){
 
-  glDisable(GL_LIGHTING);
+  //glDisable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 	map.renderMap();
-  glEnable(GL_LIGHTING);
+
 
 	glEnable(GL_CULL_FACE);
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
 	modelOpponentCar.Draw();
-	modelPlayerCar.Translate(map.playerCar->x, 0.3f, map.playerCar->z);
+	modelPlayerCar.Translate(posX,0.3f,posZ);//map.playerCar->x, 0.3f, map.playerCar->z);
 	modelPlayerCar.Draw();
 	glDisable(GL_CULL_FACE);
+}
+
+void printMap(){
+	  glViewport(0,windowHeight - windowHeight/3,windowWidth/3,windowHeight/3);
+
+	  glMatrixMode(GL_PROJECTION);
+	  glPushMatrix();
+
+
+	  glLoadIdentity();
+
+	  glOrtho( 0.0,map.miniMap.info->bmiHeader.biWidth*map.scale,  0.0, map.miniMap.info->bmiHeader.biHeight*map.scale, 0.1, 100.0);
+
+
+	  glMatrixMode(GL_MODELVIEW);
+
+	  glLoadIdentity();
+
+	  gluLookAt(0.0,14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+
+	  renderModels();
+
+	  glMatrixMode(GL_PROJECTION);
+
+	  glPopMatrix();
+
+	  glViewport(0,0,windowWidth,windowHeight);
+
+	  glMatrixMode(GL_MODELVIEW);
 }
 
 void renderScene() {
@@ -208,36 +263,7 @@ void renderScene() {
 
 	renderModels();
 
-  glViewport(0,windowHeight - windowHeight/3,windowWidth/3,windowHeight/3);
-
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-
-
-  glLoadIdentity();
-
-  glOrtho( 0.0,map.miniMap.info->bmiHeader.biWidth*map.scale,  0.0, map.miniMap.info->bmiHeader.biHeight*map.scale, 0.1, 100.0);
-
-
-  glMatrixMode(GL_MODELVIEW);
-
-  glLoadIdentity();
-
-  gluLookAt(0.0,14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-  //glTranslated( 0.0,10.0,0.0);
-  //glRotated( 90.0,1.0,0.0,0.0);
-
-
-  renderModels();
-
-  glMatrixMode(GL_PROJECTION);
-
-  glPopMatrix();
-
-  glViewport(0,0,windowWidth,windowHeight);
-
-  glMatrixMode(GL_MODELVIEW);
-
+	printMap();
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
 }
 
@@ -370,25 +396,6 @@ void onMousePassiveMove(int x, int y) {
 		mouseLastY = y;
 	}
 
-	/*	roty += (x - mouseLastX);
-
-	rotx -= (y - mouseLastY);
-
-	r
-	//if (rotx < -128.0) {
-	//	rotx = -128.0;
-	//}
-
-	//if (rotx > -45.0) {
-	//	rotx = -45.0;
-	//}
-
-	mouseLastX = x;
-	mouseLastY = y;
-
-	//glutPostRedisplay();
-	 *
-	 */
 }
 
 /**
