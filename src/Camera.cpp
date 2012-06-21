@@ -24,7 +24,7 @@ Camera::~Camera() {
 
 
 void Camera::visualize(){
-	gluLookAt(position[0],position[1],position[2],
+	gluLookAt(position[0]-orientation[0],position[1]-orientation[1],position[2]-orientation[2],
 			position[0]+orientation[0],position[1]+orientation[1],position[2]+orientation[2],
 			0.0,1.0,0.0);
 

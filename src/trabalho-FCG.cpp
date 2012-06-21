@@ -12,6 +12,7 @@ sobre um plano.
 #include <gl/glut.h>
 #include "Map.h"
 #include "ModelAl.h"
+#include "Camera.h"
 
 #define PI 3.14159265
 
@@ -48,8 +49,8 @@ int windowHeight = 768;
 /**
 Screen position
 */
-int windowXPos = 100;
-int windowYPos = 150;
+int windowXPos = 10;
+int windowYPos = 15;
 
 int mainWindowId = 0;
 
@@ -78,6 +79,13 @@ float posZ = 2.0f;
 
 float backgrundColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 Map map;
+
+GLdouble car_camera_position[3];
+GLdouble car_camera_direction[3];
+Camera * myCam = new Camera(car_camera_position,car_camera_direction);
+
+float lastRotY = roty;
+
 
 CModelAl modelPlayerCar;
 CModelAl modelOpponentCar;
@@ -127,13 +135,25 @@ void updateCam() {
 
 	glLightfv(GL_LIGHT1, GL_POSITION, light_position);
 	glLightfv(GL_LIGHT2, GL_POSITION, light_position);
-	gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
-		posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) - rotx/180,posZ -cos(roty*PI/180),
-		0.0,1.0,0.0);
-
 	lightPos+=10.0;
 	if(lightPos >= 360.0)
 		lightPos = 0.0;
+
+	car_camera_position[0] = posX;
+	car_camera_position[1] = posY + 1.0;
+	car_camera_position[2] = posZ;
+
+	car_camera_direction[0] = 5*sin(roty*PI/180);
+	car_camera_direction[1] = -0.2 - rotx/180;
+	car_camera_direction[2] = 5*(-cos(roty*PI/180));
+
+
+	myCam->visualize();
+
+	//gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
+	//	posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) - rotx/180,posZ -cos(roty*PI/180),
+	//	0.0,1.0,0.0);
+
 
 }
 
@@ -205,6 +225,8 @@ void mainInit() {
 
 }
 
+
+
 void renderModels(){
 
   //glDisable(GL_LIGHTING);
@@ -216,6 +238,9 @@ void renderModels(){
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
 	modelOpponentCar.Draw();
 	modelPlayerCar.Translate(posX,0.3f,posZ);//map.playerCar->x, 0.3f, map.playerCar->z);
+	//Rotacionando o carro de acordo com a visao.
+	modelPlayerCar.RotateY(PI + (-((roty - lastRotY)*PI))/180.0);
+	lastRotY = roty;
 	modelPlayerCar.Draw();
 	glDisable(GL_CULL_FACE);
 }
