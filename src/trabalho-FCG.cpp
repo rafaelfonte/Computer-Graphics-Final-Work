@@ -291,8 +291,57 @@ void renderScene() {
 	printMap();
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
 }
+/*
+ *
+ * TODO:
+ * Fazer a lógica de colisão com o inimigo!
+ * NÃO ESQUECER: cuidar com o type casting!!!!
+ *
+ * */
+
+#define buildingWidth 10.0f
+#define halfBuildingWidth buildingWidth/2.0
+
+bool hitsWall(float position[]){
+
+	CRD * listRunner = map.buildingList;
+	while(listRunner != NULL)
+	{
+		if(((listRunner->x - halfBuildingWidth) < position[0]) &&
+		   ((listRunner->x + halfBuildingWidth) > position[0]) &&
+		   ((listRunner->z - halfBuildingWidth) < position[2]) &&
+		   ((listRunner->z + halfBuildingWidth) > position[2]))
+			return true;
+		listRunner = listRunner->next;
+	}
+
+
+	///)
+
+	if(!((0.0 < position[0]) &&
+		 (((float)map.miniMap.info->bmiHeader.biWidth*(float)map.scale) > position[0]) &&
+		 (0.0 < position[2]) &&
+	     (((float)map.miniMap.info->bmiHeader.biHeight*(float)map.scale) > position[2])))
+		return true;
+/*
+	if(!((0.0 < position[0]) &&
+			 (90.0 > position[0]) &&
+			 (0.0 < position[2]) &&
+		     (90.0 > position[2])))
+			return true;
+			*/
+	return false;
+}
+
+int count = 0;
 
 void updateState() {
+
+
+	float posVector[3];
+	posVector[0] = posX;
+	posVector[1] = posY;
+	posVector[2] = posZ;
 
 	if (upPressed || downPressed) {
 
@@ -311,11 +360,11 @@ void updateState() {
 		}
 
         if (upPressed) {
-            posX += speedX;
-            posZ += speedZ;
+        	posVector[0] += speedX;
+        	posVector[2] += speedZ;
         } else {
-            posX -= speedX;
-            posZ -= speedZ;
+        	posVector[0] -= speedX;
+        	posVector[2] -= speedZ;
         }
 
 	} else {
@@ -327,9 +376,9 @@ void updateState() {
 		}
 	}
 
-	posY += speedY;
-	if (posY < heightLimit) {
-		posY = heightLimit;
+	posVector[1] += speedY;
+	if (posVector[1] < heightLimit) {
+		posVector[1] = heightLimit;
 		speedY = 0.0f;
 		jumping = false;
 	} else {
@@ -346,6 +395,21 @@ void updateState() {
 		if (posYOffset > 0.2) {
 			posYOffset = 0.2;
 		}
+	}
+
+	if(!hitsWall(posVector))
+	{
+		posX = posVector[0];
+		posY = posVector[1];
+		posZ = posVector[2];
+	}
+
+	count++;
+	if((count % 30) == 0){
+		printf("posX = %f; posY = %f; posZ = %f\n", posX, posY, posZ);
+		printf("%f, %f\n", (float)map.miniMap.info->bmiHeader.biHeight, (float)map.miniMap.info->bmiHeader.biHeight*(float)map.scale);
+
+		//map.background.info->bmiHeader.
 	}
 
 }
