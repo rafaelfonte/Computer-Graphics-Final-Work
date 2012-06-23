@@ -123,6 +123,8 @@ Atualiza a posição e orientação da camera
 */
 
 float lightPos = 0.0;
+int count = 0;
+
 void updateCam() {
 
 	//Atualizando a posição das fontes de luz
@@ -138,6 +140,16 @@ void updateCam() {
 	lightPos+=10.0;
 	if(lightPos >= 360.0)
 		lightPos = 0.0;
+
+	count++;
+	if((count % 30) == 0){
+		printf("%f\n", rotx);
+	}
+
+	//Limiting camera rotation around the horizontal axis, made by mouse movement.
+	if(rotx < -240.0)
+		rotx = -240.0;
+
 
 	car_camera_position[0] = posX;
 	car_camera_position[1] = posY + 1.0;
@@ -233,7 +245,6 @@ void renderModels(){
 	glEnable(GL_LIGHTING);
 	map.renderMap();
 
-
 	glEnable(GL_CULL_FACE);
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
 	modelOpponentCar.Draw();
@@ -323,17 +334,8 @@ bool hitsWall(float position[]){
 		 (0.0 < position[2]) &&
 	     (((float)map.miniMap.info->bmiHeader.biHeight*(float)map.scale) > position[2])))
 		return true;
-/*
-	if(!((0.0 < position[0]) &&
-			 (90.0 > position[0]) &&
-			 (0.0 < position[2]) &&
-		     (90.0 > position[2])))
-			return true;
-			*/
 	return false;
 }
-
-int count = 0;
 
 void updateState() {
 
@@ -402,14 +404,6 @@ void updateState() {
 		posX = posVector[0];
 		posY = posVector[1];
 		posZ = posVector[2];
-	}
-
-	count++;
-	if((count % 30) == 0){
-		printf("posX = %f; posY = %f; posZ = %f\n", posX, posY, posZ);
-		printf("%f, %f\n", (float)map.miniMap.info->bmiHeader.biHeight, (float)map.miniMap.info->bmiHeader.biHeight*(float)map.scale);
-
-		//map.background.info->bmiHeader.
 	}
 
 }

@@ -434,8 +434,9 @@ void Map::makeBuilding(int x, int z) {
   glNormal3f(0.0f,1.0f,0.0f);
   glVertex3f(x + (scale / 2), buildingHeight, z + (scale / 2));
 
-  glDisable(celling.type);
   glEnd();
+  glDisable(celling.type);
+
 
 	glPopMatrix();
 }
