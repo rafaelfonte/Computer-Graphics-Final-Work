@@ -118,9 +118,9 @@ void Map::setWallTexture(char *path)
 /**
  *
  */
-void Map::setCellingTexture(char *path)
+void Map::setCeilingTexture(char *path)
 {
-  celling.initTexture(path);
+  ceiling.initTexture(path);
 }
 
 /**
@@ -412,9 +412,9 @@ void Map::makeBuilding(int x, int z) {
 
   glDisable(wall.type);
 
-  glTexImage2D(celling.type, 0, 4, celling.info->bmiHeader.biWidth, celling.info->bmiHeader.biHeight,
-                    0, GL_RGBA, GL_UNSIGNED_BYTE, celling.rgba );
-	glEnable(celling.type);
+  glTexImage2D(ceiling.type, 0, 4, ceiling.info->bmiHeader.biWidth, ceiling.info->bmiHeader.biHeight,
+                    0, GL_RGBA, GL_UNSIGNED_BYTE, ceiling.rgba );
+	glEnable(ceiling.type);
 
   glColor4f(1.0f,1.0f,1.0f,1.0f);
   glBegin(GL_QUADS);
@@ -435,7 +435,7 @@ void Map::makeBuilding(int x, int z) {
   glVertex3f(x + (scale / 2), buildingHeight, z + (scale / 2));
 
   glEnd();
-  glDisable(celling.type);
+  glDisable(ceiling.type);
 
 
 	glPopMatrix();

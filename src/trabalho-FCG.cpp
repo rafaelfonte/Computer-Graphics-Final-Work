@@ -118,9 +118,18 @@ void setWindow() {
 		0.0,1.0,0.0);
 }
 
+float calcDistance(float p1[], float p2[]){
+
+	float x = p1[0] - p2[0];
+	float y = p1[1] - p2[1];
+	float z = p1[2] - p2[2];
+	return sqrt(x*x + y*y + z*z);
+}
+
 /**
 Atualiza a posição e orientação da camera
 */
+
 
 float lightPos = 0.0;
 int count = 0;
@@ -150,6 +159,16 @@ void updateCam() {
 	if(rotx < -240.0)
 		rotx = -240.0;
 
+	float playerPos[] = {posX, 0.0, posZ};
+	float enemyPos[] = {(float)map.opponentCar->x,0.0,(float)map.opponentCar->z};
+
+
+	printf("%f\n", calcDistance(playerPos,enemyPos));
+
+	if(calcDistance(playerPos,enemyPos) < 1.0){
+		printf("GAME OVER");
+		exit(0);
+	}
 
 	car_camera_position[0] = posX;
 	car_camera_position[1] = posY + 1.0;
@@ -211,7 +230,7 @@ void mainInit() {
   map.setBackgroundTexture("..\\res\\background.bmp");
   map.setFloorTexture("..\\res\\road.bmp");
   map.setWallTexture("..\\res\\wall.bmp");
-  map.setCellingTexture("..\\res\\celling.bmp");
+  map.setCeilingTexture("..\\res\\celling.bmp");
   map.populateLists();
   map.printList(map.buildingList);
   // habilita remocao de faces ocultas
@@ -236,8 +255,6 @@ void mainInit() {
 	printf("espaco - pular \n");
 
 }
-
-
 
 void renderModels(){
 

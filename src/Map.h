@@ -43,7 +43,7 @@ class Map
 
     Texture wall;
 
-    Texture celling;
+    Texture ceiling;
 
     Texture miniMap;
 
@@ -57,7 +57,7 @@ class Map
 
     void setWallTexture(char *path);
 
-    void setCellingTexture(char *path);
+    void setCeilingTexture(char *path);
 
     void renderMap();
 
