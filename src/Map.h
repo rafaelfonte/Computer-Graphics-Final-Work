@@ -33,6 +33,8 @@ class Map
 
     CRD *opponentCar;
 
+    CRD *streetList;
+
     int scale;
 
     Texture background;

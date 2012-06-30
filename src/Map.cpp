@@ -70,6 +70,15 @@ void Map::populateLists() {
       x = (scale * x) + (scale/2);
       insertList(&playerCar, x, z);
     }
+    // Blue pixel is the opponent car
+    if(miniMap.ptr[0] == 0 && miniMap.ptr[1] == 0 && miniMap.ptr[2] == 0) {
+      printf("É rua\n");
+      z = i % miniMap.info->bmiHeader.biWidth;
+      z = (scale * z) + (scale/2);
+      x = i / miniMap.info->bmiHeader.biWidth;
+      x = (scale * x) + (scale/2);
+      insertList(&streetList, x, z);
+    }
     if (((i + 1) / j) == miniMap.info->bmiHeader.biWidth) {
       miniMap.ptr += 1;
       j++;
@@ -83,6 +92,7 @@ Map::Map()
   buildingList = createList();
   playerCar = createList();
   opponentCar = createList();
+  streetList = createList();
   scale = 10;
 }
 
