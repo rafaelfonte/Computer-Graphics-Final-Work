@@ -19,6 +19,8 @@ int CModelAl::m_nTotalAl = 0;
 //-----------------------------------------------------------------------------
 // constructor
 //-----------------------------------------------------------------------------
+
+
 CModelAl::CModelAl() {
 
   m_poObject = NULL;
@@ -303,4 +305,8 @@ void CModelAl::Translate(float fX, float fY, float fZ) {
   m_afPosition[0] = fX;
   m_afPosition[1] = fY;
   m_afPosition[2] = fZ;
+}
+
+void CModelAl::resetAngle(){
+	m_fAngle = 0.0f;
 }

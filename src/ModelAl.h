@@ -50,6 +50,8 @@ public:
   /// initialize the Al object
   bool Init();
 
+  void resetAngle();
+
   /// draw the model
   void Draw(bool bnDrawSpheres = false);
 

@@ -13,6 +13,7 @@ sobre um plano.
 #include "Map.h"
 #include "ModelAl.h"
 #include "Camera.h"
+#include "Car.h"
 
 #define PI 3.14159265
 
@@ -41,10 +42,10 @@ void updateCam();
 /**
 Screen dimensions
 */
-//int windowWidth = 600;
-//int windowHeight = 480;
-int windowWidth = 1024;
-int windowHeight = 768;
+int windowWidth = 600;
+int windowHeight = 480;
+//int windowWidth = 1024;
+//int windowHeight = 768;
 
 /**
 Screen position
@@ -80,12 +81,11 @@ float posZ = 2.0f;
 float backgrundColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 Map map;
 
-GLdouble car_camera_position[3];
-GLdouble car_camera_direction[3];
-Camera * myCam = new Camera(car_camera_position,car_camera_direction);
 
-float lastRotY = roty;
+//GLdouble car_camera_direction[3];
 
+Car * playerCar = new Car(0.0f,0.3f,2.0f,180.0f);
+Camera * myCam = new Camera(playerCar->position_pointer,playerCar->car_direction);
 
 CModelAl modelPlayerCar;
 CModelAl modelOpponentCar;
@@ -136,54 +136,17 @@ int count = 0;
 
 void updateCam() {
 
-	//Atualizando a posição das fontes de luz
-	GLfloat light_position[] = {0.0,0.0,0.0,1.0};
-
-
-	light_position[0] = posX;
-	light_position[1] = 10.0f;//10*sin(lightPos*PI/180);
-	light_position[2] = posZ;
-
-	glLightfv(GL_LIGHT1, GL_POSITION, light_position);
-	glLightfv(GL_LIGHT2, GL_POSITION, light_position);
-	lightPos+=10.0;
-	if(lightPos >= 360.0)
-		lightPos = 0.0;
-
-	count++;
-	if((count % 30) == 0){
-		printf("%f\n", rotx);
-	}
-
-	//Limiting camera rotation around the horizontal axis, made by mouse movement.
-	if(rotx < -240.0)
-		rotx = -240.0;
-
-	float playerPos[] = {posX, 0.0, posZ};
+	float playerPos[] = {(float)playerCar->position_pointer[0], 0.0,(float) playerCar->position_pointer[2]};
 	float enemyPos[] = {(float)map.opponentCar->x,0.0,(float)map.opponentCar->z};
 
-
-	printf("%f\n", calcDistance(playerPos,enemyPos));
 
 	if(calcDistance(playerPos,enemyPos) < 1.0){
 		printf("GAME OVER");
 		exit(0);
 	}
 
-	car_camera_position[0] = posX;
-	car_camera_position[1] = posY + 1.0;
-	car_camera_position[2] = posZ;
-
-	car_camera_direction[0] = 5*sin(roty*PI/180);
-	car_camera_direction[1] = -0.2 - rotx/180;
-	car_camera_direction[2] = 5*(-cos(roty*PI/180));
-
 
 	myCam->visualize();
-
-	//gluLookAt(posX,posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)),posZ,
-	//	posX + sin(roty*PI/180),posY + posYOffset + 0.025 * std::abs(sin(headPosAux*PI/180)) - rotx/180,posZ -cos(roty*PI/180),
-	//	0.0,1.0,0.0);
 
 
 }
@@ -236,14 +199,16 @@ void mainInit() {
   // habilita remocao de faces ocultas
 
   	modelOpponentCar = CModelAl();
-  	modelPlayerCar = CModelAl();
+  	//modelPlayerCar = CModelAl();
 
-  	posX = map.playerCar->x;
-  	posZ = map.playerCar->z;
+  	GLdouble position[] = {map.playerCar->x,0.3f,map.playerCar->z};
+  	playerCar->initPos(position);
+  	//posX = map.playerCar->x;
+  	//posZ = map.playerCar->z;
 
     glFrontFace(GL_CCW);
 	modelOpponentCar.Init();
-	modelPlayerCar.Init();
+	//modelPlayerCar.Init();
 
 	initLight();
 
@@ -265,31 +230,13 @@ void renderModels(){
 	glEnable(GL_CULL_FACE);
 	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
 	modelOpponentCar.Draw();
-	modelPlayerCar.Translate(posX,0.3f,posZ);//map.playerCar->x, 0.3f, map.playerCar->z);
-	//Rotacionando o carro de acordo com a visao.
-	modelPlayerCar.RotateY(PI + (-((roty - lastRotY)*PI))/180.0);
-	lastRotY = roty;
-	modelPlayerCar.Draw();
+
+	playerCar->draw();
 	glDisable(GL_CULL_FACE);
 }
 
 void printMap(){
-	  glViewport(0,windowHeight - windowHeight/3,windowWidth/3,windowHeight/3);
-
-	  glMatrixMode(GL_PROJECTION);
-	  glPushMatrix();
-
-
-	  glLoadIdentity();
-
-	  glOrtho( 0.0,map.miniMap.info->bmiHeader.biWidth*map.scale,  0.0, map.miniMap.info->bmiHeader.biHeight*map.scale, 0.1, 100.0);
-
-
-	  glMatrixMode(GL_MODELVIEW);
-
-	  glLoadIdentity();
-
-	  gluLookAt(0.0,14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+	  map.printMiniMap(windowWidth,windowHeight);
 
 	  renderModels();
 
@@ -310,7 +257,6 @@ void renderScene() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-  //printf("x = %f, z = %f\n", posX, posZ);
 
 	updateCam();
 
@@ -319,108 +265,17 @@ void renderScene() {
 	printMap();
 	//////////////////////////////////////////////////mappppppppppppppppppppppppppppp
 }
-/*
- *
- * TODO:
- * Fazer a lógica de colisão com o inimigo!
- * NÃO ESQUECER: cuidar com o type casting!!!!
- *
- * */
-
-#define buildingWidth 10.0f
-#define halfBuildingWidth buildingWidth/2.0
-
-bool hitsWall(float position[]){
-
-	CRD * listRunner = map.buildingList;
-	while(listRunner != NULL)
-	{
-		if(((listRunner->x - halfBuildingWidth) < position[0]) &&
-		   ((listRunner->x + halfBuildingWidth) > position[0]) &&
-		   ((listRunner->z - halfBuildingWidth) < position[2]) &&
-		   ((listRunner->z + halfBuildingWidth) > position[2]))
-			return true;
-		listRunner = listRunner->next;
-	}
-
-
-	///)
-
-	if(!((0.0 < position[0]) &&
-		 (((float)map.miniMap.info->bmiHeader.biWidth*(float)map.scale) > position[0]) &&
-		 (0.0 < position[2]) &&
-	     (((float)map.miniMap.info->bmiHeader.biHeight*(float)map.scale) > position[2])))
-		return true;
-	return false;
-}
 
 void updateState() {
 
-
 	float posVector[3];
-	posVector[0] = posX;
-	posVector[1] = posY;
-	posVector[2] = posZ;
+	posVector[0] = (float)playerCar->position_pointer[0];
+	posVector[1] = (float)playerCar->position_pointer[1];
+	posVector[2] = (float)playerCar->position_pointer[2];
 
-	if (upPressed || downPressed) {
-
-		if (running) {
-			speedX = 0.05 * sin(roty*PI/180) * 20;
-			speedZ = -0.05 * cos(roty*PI/180) * 20;
-		} else {
-			speedX = 0.05 * sin(roty*PI/180);
-			speedZ = -0.05 * cos(roty*PI/180);
-		}
-
-		// efeito de "sobe e desce" ao andar
-		headPosAux += 8.5f;
-		if (headPosAux > 180.0f) {
-			headPosAux = 0.0f;
-		}
-
-        if (upPressed) {
-        	posVector[0] += speedX;
-        	posVector[2] += speedZ;
-        } else {
-        	posVector[0] -= speedX;
-        	posVector[2] -= speedZ;
-        }
-
-	} else {
-		// parou de andar, para com o efeito de "sobe e desce"
-		headPosAux = fmod(headPosAux, 90) - 1 * headPosAux / 90;
-		headPosAux -= 4.0f;
-		if (headPosAux < 0.0f) {
-			headPosAux = 0.0f;
-		}
-	}
-
-	posVector[1] += speedY;
-	if (posVector[1] < heightLimit) {
-		posVector[1] = heightLimit;
-		speedY = 0.0f;
-		jumping = false;
-	} else {
-		speedY -= gravity;
-	}
-
-	if (crouched) {
-		posYOffset -= 0.01;
-		if (posYOffset < 0.1) {
-			posYOffset = 0.1;
-		}
-	} else {
-		posYOffset += 0.01;
-		if (posYOffset > 0.2) {
-			posYOffset = 0.2;
-		}
-	}
-
-	if(!hitsWall(posVector))
+	if(map.hitWall(posVector))
 	{
-		posX = posVector[0];
-		posY = posVector[1];
-		posZ = posVector[2];
+		playerCar->hitWall();
 	}
 
 }
@@ -429,6 +284,7 @@ void updateState() {
 Render scene
 */
 void mainRender() {
+	playerCar->move();
 	updateState();
 	renderScene();
 	glFlush();
@@ -505,6 +361,7 @@ void onKeyDown(unsigned char key, int x, int y) {
 	//printf("%d \n", key);
 	switch (key) {
 		case 32: //space
+			playerCar->brakeCar();
 			if (!spacePressed && !jumping) {
 				jumping = true;
 				speedY = jumpSpeed;
@@ -512,15 +369,21 @@ void onKeyDown(unsigned char key, int x, int y) {
 			spacePressed = true;
 			break;
 		case 119: //w
-      upPressed = true;
+			playerCar->pressedUp();
+			upPressed = true;
 			break;
 		case 115: //s
+			playerCar->pressedDown();
 			downPressed = true;
 			break;
 		case 97: //a
+			playerCar->pressedLeft();
+			playerCar->pressedUp();
 			leftPressed = true;
 			break;
 		case 100: //d
+			playerCar->pressedRight();
+			playerCar->pressedUp();
 			rightPressed = true;
 			break;
 		case 99: //c
@@ -545,15 +408,21 @@ void onKeyUp(unsigned char key, int x, int y) {
 			spacePressed = false;
 			break;
 		case 119: //w
+			playerCar->unpressedKey();
 			upPressed = false;
 			break;
 		case 115: //s
+			playerCar->unpressedKey();
 			downPressed = false;
 			break;
 		case 97: //a
+			playerCar->unpressedLeft();
+			playerCar->unpressedKey();
 			leftPressed = false;
 			break;
 		case 100: //d
+			playerCar->unpressedRight();
+			playerCar->unpressedKey();
 			rightPressed = false;
 			break;
 		case 99: //c

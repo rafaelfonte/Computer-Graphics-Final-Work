@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <gl/glut.h>
+#include <gl/gl.h>
 #include <stdbool.h>
 #include "Texture.h"
 #include "bitmap.h"
@@ -72,6 +73,10 @@ class Map
     void populateLists();
 
     void printList(CRD *list);
+
+    void printMiniMap(int windowWidth, int windowHeight);
+
+    bool hitWall(float position[]);
 
   //----------------------------------------------------------------------------
   protected:

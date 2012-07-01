@@ -475,3 +475,62 @@ void Map::renderMap()
   renderBackground();
   renderWall();
 }
+
+
+/*
+ * Prints the in-game minimap
+ */
+void Map::printMiniMap(int windowWidth, int windowHeight){
+
+	  glViewport(0,windowHeight - windowHeight/3,windowWidth/3,windowHeight/3);
+
+	  glMatrixMode(GL_PROJECTION);
+	  glPushMatrix();
+
+
+	  glLoadIdentity();
+
+	  glOrtho( 0.0,miniMap.info->bmiHeader.biWidth*scale,  0.0, miniMap.info->bmiHeader.biHeight*scale, 0.1, 100.0);
+
+
+	  glMatrixMode(GL_MODELVIEW);
+
+	  glLoadIdentity();
+
+	  gluLookAt(0.0,14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+}
+
+
+
+#define buildingWidth 10.0f
+#define halfBuildingWidth buildingWidth/2.0
+
+/*
+ *
+ * Determines whether the point violates any of the wall/building limits.
+ */
+
+bool Map::hitWall(float position[]){
+
+	CRD * listRunner = buildingList;
+	while(listRunner != NULL)
+	{
+		if(((listRunner->x - halfBuildingWidth) < position[0]) &&
+		   ((listRunner->x + halfBuildingWidth) > position[0]) &&
+		   ((listRunner->z - halfBuildingWidth) < position[2]) &&
+		   ((listRunner->z + halfBuildingWidth) > position[2]))
+			return true;
+		listRunner = listRunner->next;
+	}
+
+	if(!((0.0 < position[0]) &&
+		 (((float)miniMap.info->bmiHeader.biWidth*(float)scale) > position[0]) &&
+		 (0.0 < position[2]) &&
+	     (((float)miniMap.info->bmiHeader.biHeight*(float)scale) > position[2])))
+		return true;
+	return false;
+}
+
+
+
+
