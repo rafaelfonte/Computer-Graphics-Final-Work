@@ -15,7 +15,32 @@ sobre um plano.
 #include "Camera.h"
 #include "Car.h"
 
+#include <al/alut.h>
+
+
 #include <time.h>  //Cálculos de tempo
+
+#pragma comment(lib, "OpenAL32.lib")
+#pragma comment(lib, "alut.lib")
+
+#define NUM_BUFFERS 1
+#define NUM_SOURCES 1
+#define NUM_ENVIRONMENTS 1
+
+ALfloat listenerPos[]={0.0,0.0,4.0};
+ALfloat listenerVel[]={0.0,0.0,0.0};
+ALfloat listenerOri[]={0.0,0.0,1.0,
+						0.0,1.0,0.0};
+
+ALfloat source0Pos[]={ -2.0, 0.0, 0.0};
+ALfloat source0Vel[]={ 0.0, 0.0, 0.0};
+
+ALuint  buffer[NUM_BUFFERS];
+ALuint  source[NUM_SOURCES];
+ALuint  environment[NUM_ENVIRONMENTS];
+ALsizei size,freq;
+ALenum  format;
+ALvoid  *data;
 
 GLvoid *font_style = GLUT_BITMAP_HELVETICA_18;//GLUT_BITMAP_TIMES_ROMAN_24;
 
@@ -130,6 +155,68 @@ float posYOffset = 0.2;
  * */
 clock_t t_start,t_current;
 
+
+void initSound() {
+
+	printf("Initializing OpenAl \n");
+
+	// Init openAL
+	alutInit(0, NULL);
+
+	alGetError(); // clear any error messages
+
+    // Generate buffers, or else no sound will happen!
+    alGenBuffers(NUM_BUFFERS, buffer);
+
+    if(alGetError() != AL_NO_ERROR)
+    {
+        printf("- Error creating buffers !!\n");
+        exit(1);
+    }
+    else
+    {
+        printf("init() - No errors yet.\n");
+    }
+
+	alutLoadWAVFile("..\\res\\Full On The Mouth - Another (Road Rash 64 Soundtrack) - YouTube.wav",&format,&data,&size,&freq,(char*)false);
+    alBufferData(buffer[0],format,data,size,freq);
+
+	alGetError(); /* clear error */
+    alGenSources(NUM_SOURCES, source);
+
+    if(alGetError() != AL_NO_ERROR)
+    {
+        printf("- Error creating sources !!\n");
+        exit(2);
+    }
+    else
+    {
+        printf("init - no errors after alGenSources\n");
+    }
+
+	listenerPos[0] = posX;
+	listenerPos[1] = posY;
+	listenerPos[2] = posZ;
+
+	source0Pos[0] = posX;
+	source0Pos[1] = posY;
+	source0Pos[2] = posZ;
+
+	alListenerfv(AL_POSITION,listenerPos);
+    alListenerfv(AL_VELOCITY,listenerVel);
+    alListenerfv(AL_ORIENTATION,listenerOri);
+
+	alSourcef(source[0], AL_PITCH, 1.0f);
+    alSourcef(source[0], AL_GAIN, 1.0f);
+    alSourcefv(source[0], AL_POSITION, source0Pos);
+    alSourcefv(source[0], AL_VELOCITY, source0Vel);
+    alSourcei(source[0], AL_BUFFER,buffer[0]);
+    alSourcei(source[0], AL_LOOPING, AL_TRUE);
+
+	printf("Sound ok! \n\n");
+}
+
+
 void setWindow() {
 
 	glMatrixMode(GL_PROJECTION);
@@ -221,23 +308,22 @@ void mainInit() {
   map.setCeilingTexture("..\\res\\celling.bmp");
   map.populateLists();
   map.printList(map.buildingList);
-  // habilita remocao de faces ocultas
 
   	modelOpponentCar = CModelAl();
   	//modelPlayerCar = CModelAl();
 
   	GLdouble position[] = {map.playerCar->x,0.3f,map.playerCar->z};
   	playerCar->initPos(position);
-  	//posX = map.playerCar->x;
-  	//posZ = map.playerCar->z;
 
     glFrontFace(GL_CCW);
 	modelOpponentCar.Init();
-	//modelPlayerCar.Init();
 
 	initLight();
 
 	t_start = clock();
+
+	initSound();
+	alSourcePlay(source[0]);
 
 	printf("w - andar \n");
 	printf("s - ir pra tras \n");
@@ -250,7 +336,6 @@ void mainInit() {
 
 void renderModels(){
 
-  //glDisable(GL_LIGHTING);
 	glEnable(GL_LIGHTING);
 	map.renderMap();
 
