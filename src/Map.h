@@ -70,6 +70,8 @@ class Map
 
     bool emptyList(CRD *list);
 
+    bool gotPosition(float x, float z, CRD *list);
+
     void populateLists();
 
     void printList(CRD *list);

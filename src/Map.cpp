@@ -12,6 +12,18 @@ bool Map::emptyList(CRD *list) {
   }
 }
 
+bool Map::gotPosition(float x, float z, CRD *list) {
+  CRD *iterator = list;
+  while (!emptyList(iterator) && (iterator->x != x || iterator->z != z)) {
+    iterator = iterator->next;
+  }
+  if (!emptyList(iterator)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 void Map::printList(CRD *list) {
   CRD *iterator;
   iterator = list;
@@ -60,6 +72,7 @@ void Map::populateLists() {
       x = i / miniMap.info->bmiHeader.biWidth;
       x = (scale * x) + (scale/2);
       insertList(&opponentCar, x, z);
+      insertList(&streetList, x, z);
     }
     // Blue pixel is the opponent car
     if(miniMap.ptr[0] == 0 && miniMap.ptr[1] == 0 && miniMap.ptr[2] == 255) {
@@ -69,6 +82,7 @@ void Map::populateLists() {
       x = i / miniMap.info->bmiHeader.biWidth;
       x = (scale * x) + (scale/2);
       insertList(&playerCar, x, z);
+      insertList(&streetList, x, z);
     }
     // Blue pixel is the opponent car
     if(miniMap.ptr[0] == 0 && miniMap.ptr[1] == 0 && miniMap.ptr[2] == 0) {

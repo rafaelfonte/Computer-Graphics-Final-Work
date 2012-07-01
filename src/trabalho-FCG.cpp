@@ -134,6 +134,15 @@ Camera * myCam = new Camera(playerCar->position_pointer,playerCar->car_direction
 
 CModelAl modelPlayerCar;
 CModelAl modelOpponentCar;
+float opponentSpeed = 0.5f;
+int opponentDirection = 0; // Sempre começa pela esquerda
+/**
+ * Controla a direção que o oponente se movimentava (importante para as curvas e posicionamento do carro)
+ * 0: para a esquerda +Z
+ * 1: para a direita -Z
+ * 2: para cima +X
+ * 3: para baixo -X
+ */
 
 /*
 variavel auxiliar pra dar variação na altura do ponto de vista ao andar.
@@ -299,6 +308,7 @@ void mainInit() {
 	// habilita o z-buffer
 	glEnable(GL_DEPTH_TEST);
 
+	srand(time(NULL));
   ///////////////////////////////////////////////////////MAPPPPP
   map.setMiniMapTexture("..\\res\\map.bmp");
   map.setSkyTexture("..\\res\\sky.bmp");
@@ -334,14 +344,98 @@ void mainInit() {
 
 }
 
+void randomDirection() {
+
+  bool validDirection = false;
+  int newDirection;
+
+  while (!validDirection) {
+    newDirection = rand() % 4;
+    switch (newDirection) {
+      case 0: // Deve ir para a esquerda. A direção antiga n pode ser direita
+        if (opponentDirection != 1) {
+          // Testa se tem rua pra onde deve ir
+          if (map.gotPosition(map.opponentCar->x, map.opponentCar->z + map.scale, map.streetList)) {
+            opponentDirection = newDirection;
+            modelOpponentCar.resetAngle();
+            modelOpponentCar.RotateY(PI + (-(0.0f*PI)/180.0f));
+            validDirection = true;
+          }
+        }
+        break;
+      case 1: // Deve ir para a direita. A direção antiga n pode ser esquerda
+        if (opponentDirection != 0) {
+          // Testa se tem rua pra onde deve ir
+          if (map.gotPosition(map.opponentCar->x, map.opponentCar->z - map.scale, map.streetList)) {
+            opponentDirection = newDirection;
+            modelOpponentCar.resetAngle();
+            modelOpponentCar.RotateY(PI + (-(180.0f*PI)/180.0f));
+            validDirection = true;
+          }
+        }
+        break;
+      case 2: // Deve ir para cima. A direção antiga n pode baixo
+        if (opponentDirection != 3) {
+          // Testa se tem rua pra onde deve ir
+          if (map.gotPosition(map.opponentCar->x + map.scale, map.opponentCar->z, map.streetList)) {
+            opponentDirection = newDirection;
+            modelOpponentCar.resetAngle();
+            modelOpponentCar.RotateY(PI + (-(90.0f*PI)/180.0f));
+            validDirection = true;
+          }
+        }
+        break;
+      case 3: // Deve ir para baixo. A direção antiga n pode cima
+        if (opponentDirection != 2) {
+          // Testa se tem rua pra onde deve ir
+          if (map.gotPosition(map.opponentCar->x - map.scale, map.opponentCar->z, map.streetList)) {
+            opponentDirection = newDirection;
+            modelOpponentCar.resetAngle();
+            modelOpponentCar.RotateY(PI + (-(270.0f*PI)/180.0f));
+            validDirection = true;
+          }
+        }
+        break;
+      default: // Se perdeu
+        break;
+    }
+  }
+
+
+}
+
+void moveOpponent() {
+  if (map.gotPosition(map.opponentCar->x, map.opponentCar->z, map.streetList)) {
+      //printf("O oponente está em cima de um hotspot!\n");
+      randomDirection();
+  }
+  switch (opponentDirection) {
+    case 0: // Para a esquerda +Z
+      map.opponentCar->z += opponentSpeed;
+      break;
+    case 1: // Para a direita -Z
+      map.opponentCar->z -= opponentSpeed;
+      break;
+    case 2: // Para cima +X
+      map.opponentCar->x += opponentSpeed;
+      break;
+    case 3: // Para baixo -X
+      map.opponentCar->x -= opponentSpeed;
+      break;
+    default: // Se perdeu
+      break;
+  }
+	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
+	modelOpponentCar.Draw();
+}
+
 void renderModels(){
 
 	glEnable(GL_LIGHTING);
 	map.renderMap();
 
 	glEnable(GL_CULL_FACE);
-	modelOpponentCar.Translate(map.opponentCar->x, 0.3f, map.opponentCar->z);
-	modelOpponentCar.Draw();
+	moveOpponent();
 
 	playerCar->draw();
 	glDisable(GL_CULL_FACE);
