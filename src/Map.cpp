@@ -84,7 +84,7 @@ void Map::populateLists() {
       insertList(&playerCar, x, z);
       insertList(&streetList, x, z);
     }
-    // Blue pixel is the opponent car
+    // Black pixel is the street
     if(miniMap.ptr[0] == 0 && miniMap.ptr[1] == 0 && miniMap.ptr[2] == 0) {
       printf("É rua\n");
       z = i % miniMap.info->bmiHeader.biWidth;

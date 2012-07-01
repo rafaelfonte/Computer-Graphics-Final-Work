@@ -83,6 +83,8 @@ void setWindow();
 void setViewport(GLint left, GLint right, GLint bottom, GLint top);
 void updateState();
 void updateCam();
+void randomDirection();
+void moveOpponent();
 
 /**
 Screen dimensions
@@ -135,11 +137,11 @@ Camera * myCam = new Camera(playerCar->position_pointer,playerCar->car_direction
 CModelAl modelPlayerCar;
 CModelAl modelOpponentCar;
 float opponentSpeed = 0.5f;
-int opponentDirection = 0; // Sempre começa pela esquerda
+int opponentDirection = 0; // Sempre começa pela direita
 /**
  * Controla a direção que o oponente se movimentava (importante para as curvas e posicionamento do carro)
- * 0: para a esquerda +Z
- * 1: para a direita -Z
+ * 0: para a direita +Z
+ * 1: para a esquerda -Z
  * 2: para cima +X
  * 3: para baixo -X
  */
@@ -308,7 +310,7 @@ void mainInit() {
 	// habilita o z-buffer
 	glEnable(GL_DEPTH_TEST);
 
-	srand(time(NULL));
+
   ///////////////////////////////////////////////////////MAPPPPP
   map.setMiniMapTexture("..\\res\\map.bmp");
   map.setSkyTexture("..\\res\\sky.bmp");
@@ -318,6 +320,8 @@ void mainInit() {
   map.setCeilingTexture("..\\res\\celling.bmp");
   map.populateLists();
   map.printList(map.buildingList);
+
+  srand(time(NULL));
 
   	modelOpponentCar = CModelAl();
   	//modelPlayerCar = CModelAl();
@@ -352,7 +356,7 @@ void randomDirection() {
   while (!validDirection) {
     newDirection = rand() % 4;
     switch (newDirection) {
-      case 0: // Deve ir para a esquerda. A direção antiga n pode ser direita
+      case 0: // Deve ir para a direita. A direção antiga n pode ser esquerda
         if (opponentDirection != 1) {
           // Testa se tem rua pra onde deve ir
           if (map.gotPosition(map.opponentCar->x, map.opponentCar->z + map.scale, map.streetList)) {
@@ -363,7 +367,7 @@ void randomDirection() {
           }
         }
         break;
-      case 1: // Deve ir para a direita. A direção antiga n pode ser esquerda
+      case 1: // Deve ir para a esquerda. A direção antiga n pode ser direita
         if (opponentDirection != 0) {
           // Testa se tem rua pra onde deve ir
           if (map.gotPosition(map.opponentCar->x, map.opponentCar->z - map.scale, map.streetList)) {
@@ -400,8 +404,6 @@ void randomDirection() {
         break;
     }
   }
-
-
 }
 
 void moveOpponent() {
