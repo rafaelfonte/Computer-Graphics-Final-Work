@@ -4,7 +4,7 @@
  *  Created on: 03/06/2012
  *      Author: Rafael Fonte
  */
-
+#include <windows.h>
 #ifndef GAME_H_
 #define GAME_H_
 

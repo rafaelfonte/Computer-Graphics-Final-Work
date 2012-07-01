@@ -4,6 +4,7 @@
  *  Created on: 09/06/2012
  *      Author: Rafael Fonte
  */
+ #include <windows.h>
 #include <GL/glu.h>
 
 #ifndef CAMERA_H_

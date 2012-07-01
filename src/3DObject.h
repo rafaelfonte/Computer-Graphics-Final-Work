@@ -6,6 +6,7 @@
 #define _3DOBJECT_H
 
 //#include <stdio.h>
+#include <windows.h>
 #include <string.h>
 #include "glm.h"
 

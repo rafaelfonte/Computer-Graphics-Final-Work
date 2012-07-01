@@ -4,6 +4,7 @@
  *  Created on: 03/06/2012
  *      Author: Rafael Fonte
  */
+ #include <windows.h>
 #include <GL/glut.h>
 #include "ModelAl.h"
 #include <cmath>

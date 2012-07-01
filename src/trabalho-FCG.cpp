@@ -136,7 +136,7 @@ Camera * myCam = new Camera(playerCar->position_pointer,playerCar->car_direction
 
 CModelAl modelPlayerCar;
 CModelAl modelOpponentCar;
-float opponentSpeed = 0.5f;
+float opponentSpeed = 1.0f;
 int opponentDirection = 0; // Sempre começa pela direita
 /**
  * Controla a direção que o oponente se movimentava (importante para as curvas e posicionamento do carro)
@@ -362,7 +362,7 @@ void randomDirection() {
           if (map.gotPosition(map.opponentCar->x, map.opponentCar->z + map.scale, map.streetList)) {
             opponentDirection = newDirection;
             modelOpponentCar.resetAngle();
-            modelOpponentCar.RotateY(PI + (-(0.0f*PI)/180.0f));
+            modelOpponentCar.RotateY(PI + (-(180.0f*PI)/180.0f));
             validDirection = true;
           }
         }
@@ -373,7 +373,7 @@ void randomDirection() {
           if (map.gotPosition(map.opponentCar->x, map.opponentCar->z - map.scale, map.streetList)) {
             opponentDirection = newDirection;
             modelOpponentCar.resetAngle();
-            modelOpponentCar.RotateY(PI + (-(180.0f*PI)/180.0f));
+            modelOpponentCar.RotateY(PI + (-(0.0f*PI)/180.0f));
             validDirection = true;
           }
         }

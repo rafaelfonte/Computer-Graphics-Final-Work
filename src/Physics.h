@@ -4,7 +4,7 @@
  *  Created on: 09/06/2012
  *      Author: Rafael Fonte
  */
-
+#include <windows.h>
 #define WORLD_DIMENSIONS 3
 
 #ifndef PHYSICS_H_

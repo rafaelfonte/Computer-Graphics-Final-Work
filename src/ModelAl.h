@@ -5,6 +5,7 @@
 #ifndef MODELAL_H
 #define MODELAL_H
 
+#include <windows.h>
 #include <stdio.h>
 #include <string.h>
 #include "3DObject.h"

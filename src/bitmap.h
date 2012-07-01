@@ -3,7 +3,7 @@
  *
  * Written by Michael Sweet.
  */
-
+#include <windows.h>
 #ifndef _BITMAP_H_
 #  define _BITMAP_H_
 
