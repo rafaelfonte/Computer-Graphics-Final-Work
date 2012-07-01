@@ -15,6 +15,26 @@ sobre um plano.
 #include "Camera.h"
 #include "Car.h"
 
+#include <time.h>  //Cálculos de tempo
+
+GLvoid *font_style = GLUT_BITMAP_HELVETICA_18;//GLUT_BITMAP_TIMES_ROMAN_24;
+
+//-------------------------------------------------------------------------
+//  Draws a string at the specified coordinates.
+//-------------------------------------------------------------------------
+
+#define MAX_MINUTES 0
+#define MAX_SECONDS 15
+
+void printw (float x, float y, float z, char * string)
+{
+
+    glRasterPos2f (x, y);
+
+    for (int i = 0; string[i] != '\0'; i++)
+    	glutBitmapCharacter(font_style, string[i]);
+}
+
 #define PI 3.14159265
 
 // sound stuff
@@ -104,6 +124,11 @@ float jumpSpeed = 0.06;
 float gravity = 0.004;
 float heightLimit = 0.2;
 float posYOffset = 0.2;
+
+/*
+ * TIME VARIABLES
+ * */
+clock_t t_start,t_current;
 
 void setWindow() {
 
@@ -212,6 +237,8 @@ void mainInit() {
 
 	initLight();
 
+	t_start = clock();
+
 	printf("w - andar \n");
 	printf("s - ir pra tras \n");
 	printf("mouse - direcao \n");
@@ -280,6 +307,46 @@ void updateState() {
 
 }
 
+void testTime(int minutes, int seconds){
+	if(minutes == MAX_MINUTES && seconds == MAX_SECONDS)
+		exit(0);
+}
+
+void printTime(){
+
+	t_current = clock();
+
+	int total_seconds = (t_current - t_start)/(CLOCKS_PER_SEC);
+	int minutes = (total_seconds - total_seconds%60)/60;
+	int seconds = total_seconds%60;
+
+
+	char lol[200];
+	sprintf(lol,"TIME ELAPSED: %02d:%02d",minutes,seconds);
+	glViewport((int)((float)windowWidth/3),windowHeight - windowHeight/3,windowWidth/3,windowHeight/3);
+
+	if(MAX_MINUTES - minutes == 0 && MAX_SECONDS - seconds < 10){
+		glColor3f(1.0,((float)(MAX_SECONDS-seconds))/10.0,((float)(MAX_SECONDS-seconds))/10.0);
+	}
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
+	printw(-0.9,0.3,-0.3,lol);
+	glViewport(0,0,windowWidth,windowHeight);
+
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+
+	testTime(minutes,seconds);
+	//glPopMatrix();
+
+	//glMatrixMode(GL_MODELVIEW);
+
+}
+
+
 /**
 Render scene
 */
@@ -287,6 +354,7 @@ void mainRender() {
 	playerCar->move();
 	updateState();
 	renderScene();
+	printTime();
 	glFlush();
 	glutPostRedisplay();
 	Sleep(20);
