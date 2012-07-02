@@ -348,6 +348,10 @@ void mainInit() {
 }
 
 void randomDirection() {
+  bool cantGoRight = false;
+  bool cantGoLeft = false;
+  bool cantGoUp = false;
+  bool cantGoDown = false;
 
   bool validDirection = false;
   int newDirection;
@@ -356,46 +360,54 @@ void randomDirection() {
     newDirection = rand() % 4;
     switch (newDirection) {
       case 0: // Deve ir para a direita. A direção antiga n pode ser esquerda
-        if (opponentDirection != 1) {
+        if (opponentDirection != 1 || (cantGoLeft && cantGoDown && cantGoUp)) {
           // Testa se tem rua pra onde deve ir
           if (map.gotPosition(map.opponentCar->x, map.opponentCar->z + map.scale, map.streetList)) {
             opponentDirection = newDirection;
             modelOpponentCar.resetAngle();
             modelOpponentCar.RotateY(PI + (-(180.0f*PI)/180.0f));
             validDirection = true;
+          } else {
+            cantGoRight = true;
           }
         }
         break;
       case 1: // Deve ir para a esquerda. A direção antiga n pode ser direita
-        if (opponentDirection != 0) {
+        if (opponentDirection != 0 || (cantGoRight && cantGoDown && cantGoUp)) {
           // Testa se tem rua pra onde deve ir
           if (map.gotPosition(map.opponentCar->x, map.opponentCar->z - map.scale, map.streetList)) {
             opponentDirection = newDirection;
             modelOpponentCar.resetAngle();
             modelOpponentCar.RotateY(PI + (-(0.0f*PI)/180.0f));
             validDirection = true;
+          } else {
+            cantGoLeft = true;
           }
         }
         break;
       case 2: // Deve ir para cima. A direção antiga n pode baixo
-        if (opponentDirection != 3) {
+        if (opponentDirection != 3 || (cantGoRight && cantGoLeft && cantGoDown)) {
           // Testa se tem rua pra onde deve ir
           if (map.gotPosition(map.opponentCar->x + map.scale, map.opponentCar->z, map.streetList)) {
             opponentDirection = newDirection;
             modelOpponentCar.resetAngle();
             modelOpponentCar.RotateY(PI + (-(90.0f*PI)/180.0f));
             validDirection = true;
+          } else {
+            cantGoUp = true;
           }
         }
         break;
       case 3: // Deve ir para baixo. A direção antiga n pode cima
-        if (opponentDirection != 2) {
+        if (opponentDirection != 2 || (cantGoRight && cantGoLeft && cantGoUp)) {
           // Testa se tem rua pra onde deve ir
           if (map.gotPosition(map.opponentCar->x - map.scale, map.opponentCar->z, map.streetList)) {
             opponentDirection = newDirection;
             modelOpponentCar.resetAngle();
             modelOpponentCar.RotateY(PI + (-(270.0f*PI)/180.0f));
             validDirection = true;
+          } else {
+            cantGoDown = true;
           }
         }
         break;
