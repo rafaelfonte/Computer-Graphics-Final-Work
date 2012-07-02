@@ -48,8 +48,8 @@ GLvoid *font_style = GLUT_BITMAP_HELVETICA_18;//GLUT_BITMAP_TIMES_ROMAN_24;
 //  Draws a string at the specified coordinates.
 //-------------------------------------------------------------------------
 
-#define MAX_MINUTES 0
-#define MAX_SECONDS 15
+#define MAX_MINUTES 10
+#define MAX_SECONDS 0
 
 void printw (float x, float y, float z, char * string)
 {
@@ -334,17 +334,16 @@ void mainInit() {
 
 	initLight();
 
-	t_start = clock();
-
 	initSound();
 	alSourcePlay(source[0]);
 
-	printf("w - andar \n");
-	printf("s - ir pra tras \n");
-	printf("mouse - direcao \n");
-	printf("r - correr \n");
-	printf("c - abaixar \n");
-	printf("espaco - pular \n");
+	t_start = clock();
+
+	printf("w - acelerar \n");
+	printf("s - dar re \n");
+	printf("a - virar para esquerda \n");
+	printf("d - virar para direita \n");
+	printf("espaco - frear \n");
 
 }
 
@@ -627,12 +626,12 @@ void onKeyDown(unsigned char key, int x, int y) {
 			break;
 		case 97: //a
 			playerCar->pressedLeft();
-			playerCar->pressedUp();
+			//playerCar->pressedUp();
 			leftPressed = true;
 			break;
 		case 100: //d
 			playerCar->pressedRight();
-			playerCar->pressedUp();
+			//playerCar->pressedUp();
 			rightPressed = true;
 			break;
 		case 99: //c
@@ -666,12 +665,12 @@ void onKeyUp(unsigned char key, int x, int y) {
 			break;
 		case 97: //a
 			playerCar->unpressedLeft();
-			playerCar->unpressedKey();
+			//playerCar->unpressedKey();
 			leftPressed = false;
 			break;
 		case 100: //d
 			playerCar->unpressedRight();
-			playerCar->unpressedKey();
+			//->unpressedKey();
 			rightPressed = false;
 			break;
 		case 99: //c

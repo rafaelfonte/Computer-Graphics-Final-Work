@@ -28,6 +28,7 @@ Car::Car(GLdouble initPosX,GLdouble initPosY,GLdouble initPosZ,GLdouble initRotY
 	updatePositionPointer();
 
 	speedingUp = false;
+	turning = false;
 
 }
 
@@ -55,16 +56,26 @@ void Car::hitWall(){
 
 void Car::move(){
 
-	if(speedingUp == true){
+	if(speedingUp){
+		GLdouble lin_speed = linearSpeed();
 		for(int i = 0; i < 3; i++)
 		{
 			speed[i] += acceleration[i];
 		}
-
-		GLdouble lin_speed = linearSpeed();
+		if(turning)
+		{
+			if(going_forward){
+				speed[0] = lin_speed*sin(rotY*PI/180.0);
+				speed[2] = -lin_speed*cos(rotY*PI/180.0);
+			}
+			if(going_back){
+				speed[0] = -lin_speed*sin(rotY*PI/180.0);
+				speed[2] = lin_speed*cos(rotY*PI/180.0);
+			}
+		}
 		if(lin_speed > MAX_LINEAR_SPEED){
 			for(int k = 0; k < 3; k++){
-				speed[k] = MAX_LINEAR_SPEED/lin_speed;
+				speed[k] = speed[k]*MAX_LINEAR_SPEED/lin_speed;
 			}
 			speed[1] = 0;
 		}
@@ -77,15 +88,20 @@ void Car::move(){
 	{
 		for(int i = 0; i < 3; i++)
 		{
-			if(speed[i] < 0.01 || speed[i] > -0.01)
-			{
-				speed[i] = 0;
+			if(i != 1){
+				if((speed[i] < 0.01 && speed[i] >= 0.0) || (speed[i] > -0.01  && speed[i] <= 0.0))
+				{
+					speed[i] = 0;
+				}
+				else
+				{
+					if(speed[i] > 0)
+						speed[i] -= 0.01;
+					else
+						speed[i] += 0.01;
+				}
+				position[i] += speed[i];
 			}
-			else
-			{
-				speed[i] += acceleration[i];
-			}
-			position[i] += speed[i];
 		}
 	}
 
@@ -95,18 +111,17 @@ void Car::move(){
 
 void Car::pressedUp(){
 
-	printf("%f\n", rotY);
+	going_forward = true;
 	acceleration[0] = 0.01*sin(rotY*PI/180);
 	acceleration[2] = -0.01*cos(rotY*PI/180);
 
 	speedingUp = true;
 
-	//printf("%f, %f;   %f, %f\n",position[0],position[2],acceleration[0],acceleration[2]);
-
 }
 
 void Car::pressedDown(){
 
+	going_back = true;
 	acceleration[0] = -0.01*sin(rotY*PI/180);
 	acceleration[2] = 0.01*cos(rotY*PI/180);
 
@@ -114,9 +129,20 @@ void Car::pressedDown(){
 }
 
 void Car::brakeCar(){
-	if(speed[0] >= 0.0 && speed[2] >= 0.0){
-		acceleration[0] = -cos(rotY);
-		acceleration[2] = -sin(rotY);
+
+	GLdouble lin_Speed = linearSpeed();
+
+	if(lin_Speed > 0.01){
+		for(int i = 0; i < 3; i++){
+			if(i != 1){
+				if(speed[i] > 0)
+					speed[i] -= 0.001;
+				else
+					speed[i] += 0.001;
+
+				acceleration[i] = 0.0f;
+			}
+		}
 	}
 	else
 	{
@@ -135,15 +161,18 @@ GLdouble Car::linearSpeed(){
 	return sqrt(x+y+z);
 }
 void Car::pressedLeft(){
-	rotYSpeed = -2*linearSpeed();
+	turning = true;
+	rotYSpeed = -10*linearSpeed();
 }
 
 void Car::unpressedLeft(){
+	turning = false;
 	rotYSpeed = 0.0f;
 }
 
 void Car::pressedRight(){
-	rotYSpeed = 2*linearSpeed();
+	turning = true;
+	rotYSpeed = 10*linearSpeed();
 }
 
 void Car::unpressedRight(){
@@ -152,8 +181,10 @@ void Car::unpressedRight(){
 
 void Car::unpressedKey(){
 
+	going_back = false;
+	going_forward = false;
 	for(int i = 0; i < 3; i++){
-		acceleration[i] = -acceleration[i];
+		acceleration[i] = 0;
 	}
 	speedingUp = false;
 }

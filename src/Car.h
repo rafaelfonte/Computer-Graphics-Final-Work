@@ -65,6 +65,11 @@ private:
 
 	bool speedingUp;
 
+	bool turning;
+
+	bool going_back;
+	bool going_forward;
+
 	void updatePositionPointer();
 
 };
